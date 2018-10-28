@@ -18,6 +18,7 @@ class MainView extends View {
     private Circle[] circles;
     boolean playable = false;
     boolean solve;
+    boolean clear = false;
 
     private void init() {
         circles = new Stage().read();
@@ -55,6 +56,24 @@ class MainView extends View {
         invalidate();
     }
 
+    private boolean isClear() {
+        for (Circle e: circles) {
+            if (e.getColor() == centers[0].getColor()) {
+                if(Vector2.calcSqrDistance(e.position.x, e.position.y, centers[0].position.x, centers[0].position.y) > 9 * Circle.RADIUS * Circle.RADIUS) {
+                    return false;
+                }
+            }
+        }
+        for (Circle e: circles) {
+            if (e.getColor() == centers[1].getColor()) {
+                if(Vector2.calcSqrDistance(e.position.x, e.position.y, centers[1].position.x, centers[1].position.y) > 9 * Circle.RADIUS * Circle.RADIUS) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         final float StrokeWidth = 10.0f;
@@ -77,12 +96,19 @@ class MainView extends View {
             canvas.drawText("Can you solve?", 100, 880, paint);
             solve = false;
         }
+        if(clear) {
+            paint.setTextSize(110);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.WHITE);
+            canvas.drawText("Congratulations :-)", 100, 880, paint);
+            solve = false;
+        }
     }
 
     void shuffle() {
         playable = false;
         new Thread(new Runnable() {
-            final int move = 20;
+            final int move = 4;
             int old;
             @Override
             public void run() {
@@ -168,6 +194,11 @@ class MainView extends View {
                 try{
                     Thread.sleep(6);
                 }catch(InterruptedException e){}
+                if(isClear()){
+                    clear = true;
+                    invalidate();
+                    playable = false;
+                }
             }
         }).start();
     }
@@ -198,6 +229,15 @@ class MainView extends View {
                     try{
                         Thread.sleep(6);
                     }catch(InterruptedException e){}
+                }
+                playable = true;
+                try{
+                    Thread.sleep(6);
+                }catch(InterruptedException e){}
+                if(isClear()){
+                    clear = true;
+                    invalidate();
+                    playable = false;
                 }
             }
         }).start();
