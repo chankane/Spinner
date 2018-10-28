@@ -16,6 +16,7 @@ class MainView extends View {
     private float endY;
     private Circle[] centers;
     private Circle[] circles;
+    private int degree;
 
     private void init() {
         circles = new Stage().read();
@@ -76,37 +77,65 @@ class MainView extends View {
         }
     }
 
-    private void rotR(Circle center) {
-        final int deg = 60;
-        for (Circle e: circles) {
-            if (e == center) { continue; }
-            if (Vector2.calcSqrDistance(center.position.x, center.position.y, e.position.x, e.position.y) <= 16 * Circle.RADIUS * Circle.RADIUS) {
-                e.position.x -= center.position.x;
-                e.position.y -= center.position.y;
-                float x = e.position.x;
-                float y = e.position.y;
-                e.position.x = x * (float)Math.cos(Math.toRadians(deg)) - y * (float)Math.sin(Math.toRadians(deg));
-                e.position.y = x * (float)Math.sin(Math.toRadians(deg)) + y * (float)Math.cos(Math.toRadians(deg));
-                e.position.x += center.position.x;
-                e.position.y += center.position.y;
+    private void rotR(final Circle center) {
+        new Thread(new Runnable() {
+            final int deg = 60;
+            final int div = 5;
+            @Override
+            public void run() {
+                for(int i=0; i<deg; i+=div) {
+                    for (Circle e : circles) {
+                        if (e == center) {
+                            continue;
+                        }
+                        if (Vector2.calcSqrDistance(center.position.x, center.position.y, e.position.x, e.position.y) <= 16 * Circle.RADIUS * Circle.RADIUS) {
+                            e.position.x -= center.position.x;
+                            e.position.y -= center.position.y;
+                            float x = e.position.x;
+                            float y = e.position.y;
+                            e.position.x = x * (float) Math.cos(Math.toRadians(div)) - y * (float) Math.sin(Math.toRadians(div));
+                            e.position.y = x * (float) Math.sin(Math.toRadians(div)) + y * (float) Math.cos(Math.toRadians(div));
+                            e.position.x += center.position.x;
+                            e.position.y += center.position.y;
+                        }
+                    }
+                    invalidate();
+                    try{
+                        Thread.sleep(6);
+                    }catch(InterruptedException e){}
+                }
             }
-        }
+        }).start();
     }
 
-    private void rotL(Circle center) {
-        final int deg = -60;
-        for (Circle e: circles) {
-            if (e == center) { continue; }
-            if (Vector2.calcSqrDistance(center.position.x, center.position.y, e.position.x, e.position.y) <= 16 * Circle.RADIUS * Circle.RADIUS) {
-                e.position.x -= center.position.x;
-                e.position.y -= center.position.y;
-                float x = e.position.x;
-                float y = e.position.y;
-                e.position.x = x * (float)Math.cos(Math.toRadians(deg)) - y * (float)Math.sin(Math.toRadians(deg));
-                e.position.y = x * (float)Math.sin(Math.toRadians(deg)) + y * (float)Math.cos(Math.toRadians(deg));
-                e.position.x += center.position.x;
-                e.position.y += center.position.y;
+    private void rotL(final Circle center) {
+        new Thread(new Runnable() {
+            final int deg = 60;
+            final int div = 5;
+            @Override
+            public void run() {
+                for(int i=0; i<deg; i+=div) {
+                    for (Circle e : circles) {
+                        if (e == center) {
+                            continue;
+                        }
+                        if (Vector2.calcSqrDistance(center.position.x, center.position.y, e.position.x, e.position.y) <= 16 * Circle.RADIUS * Circle.RADIUS) {
+                            e.position.x -= center.position.x;
+                            e.position.y -= center.position.y;
+                            float x = e.position.x;
+                            float y = e.position.y;
+                            e.position.x = x * (float) Math.cos(Math.toRadians(-div)) - y * (float) Math.sin(Math.toRadians(-div));
+                            e.position.y = x * (float) Math.sin(Math.toRadians(-div)) + y * (float) Math.cos(Math.toRadians(-div));
+                            e.position.x += center.position.x;
+                            e.position.y += center.position.y;
+                        }
+                    }
+                    invalidate();
+                    try{
+                        Thread.sleep(6);
+                    }catch(InterruptedException e){}
+                }
             }
-        }
+        }).start();
     }
 }
