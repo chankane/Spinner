@@ -1,12 +1,9 @@
 package com.chankane.chocolate.brawny.spinner;
 
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 
 public class MainActivity extends Activity {
 
@@ -17,9 +14,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(view = new MainView(this));
-        /*getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);*/
         gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             // フリックイベント
             @Override
