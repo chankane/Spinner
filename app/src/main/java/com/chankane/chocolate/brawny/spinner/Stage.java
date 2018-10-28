@@ -16,37 +16,39 @@ class Stage {
     Circle[] read() {
         Circle[] ret = generate();
         for (int i=0; i<ret.length; i++) {
-            ret[i].setX(CENTER_X + ret[i].getX() * Circle.RADIUS);
-            ret[i].setY(CENTER_Y + ret[i].getY() * Circle.RADIUS);
+            ret[i].position.x *= Circle.RADIUS;
+            ret[i].position.x += CENTER_X;
+            ret[i].position.y *= Circle.RADIUS;
+            ret[i].position.y += CENTER_Y;
         }
         return ret;
     }
 
     private Circle[] generate() {
-        Circle topCenter = new Circle(0, -1 - Math.sqrt(3), Color.RED, true);
-        Circle bottomCenter = new Circle(0, 1 + Math.sqrt(3), Color.GREEN, true);
+        Circle topCenter = new Circle(new Vector2(0, -1 - (float)Math.sqrt(3)), Color.RED, true);
+        Circle bottomCenter = new Circle(new Vector2(0, 1 + (float)Math.sqrt(3)), Color.GREEN, true);
         temp.add(topCenter);
         temp.add(bottomCenter);
         for(int i=0; i<6; i++){
             double dig = Math.toRadians(60 * i);
-            temp.add(new Circle(topCenter.getX() + 2 * Math.cos(dig), topCenter.getY() + 2 * Math.sin(dig), topCenter.getColor(), false));
+            temp.add(new Circle(new Vector2(topCenter.position.x + 2 * (float)Math.cos(dig), topCenter.position.y + 2 * (float)Math.sin(dig)), topCenter.getColor(), false));
         }
         for(int i=0; i<6; i++) {
             double dig = Math.toRadians(60 * i);
-            temp.add(new Circle(bottomCenter.getX() + 2 * Math.cos(dig), bottomCenter.getY() + 2 * Math.sin(dig), bottomCenter.getColor(), false));
+            temp.add(new Circle(new Vector2(bottomCenter.position.x + 2 * (float)Math.cos(dig), bottomCenter.position.y + 2 * (float)Math.sin(dig)), bottomCenter.getColor(), false));
         }
         for(int i=0; i<12; i++) {
             double dig = Math.toRadians(30 * i + 15);
-            double dist = Math.sqrt(2) + Math.sqrt(6);
-            Circle c = new Circle(topCenter.getX() + dist * Math.cos(dig), topCenter.getY() + dist * Math.sin(dig), Color.GRAY, false);
+            float dist = (float)Math.sqrt(2) + (float)Math.sqrt(6);
+            Circle c = new Circle(new Vector2(topCenter.position.x + dist * (float)Math.cos(dig), topCenter.position.y + dist * (float)Math.sin(dig)), Color.GRAY, false);
             if(!isOverlap(c)) {
                 temp.add(c);
             }
         }
         for(int i=0; i<12; i++){
             double dig = Math.toRadians(30 * i + 15);
-            double dist = Math.sqrt(2) + Math.sqrt(6);
-            Circle c = new Circle(bottomCenter.getX() + dist * Math.cos(dig), bottomCenter.getY() + dist * Math.sin(dig), Color.GRAY, false);
+            float dist = (float)Math.sqrt(2) + (float)Math.sqrt(6);
+            Circle c = new Circle(new Vector2(bottomCenter.position.x + dist * (float)Math.cos(dig), bottomCenter.position.y + dist * (float)Math.sin(dig)), Color.GRAY, false);
             if(!isOverlap(c)) {
                 temp.add(c);
             }
@@ -57,7 +59,7 @@ class Stage {
 
     private boolean isOverlap(Circle circle) {
         for(Circle e: temp) {
-            if((e.getX() - circle.getX()) * (e.getX() - circle.getX()) + (e.getY() - circle.getY()) * (e.getY() - circle.getY()) <= 1) {
+            if((e.position.x - circle.position.x) * (e.position.x - circle.position.x) + (e.position.y - circle.position.y) * (e.position.y - circle.position.y) <= 1) {
                 return true;
             }
         }

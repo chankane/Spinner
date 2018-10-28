@@ -44,6 +44,8 @@ class MainView extends View {
         invalidate();
     }
 
+    //private int crossProduct()
+
     @Override
     protected void onDraw(Canvas canvas) {
         final float StrokeWidth = 10.0f;
@@ -57,16 +59,14 @@ class MainView extends View {
                 paint.setStyle(Paint.Style.STROKE);
             }
             paint.setColor(e.getColor());
-            canvas.drawCircle((float)e.getX(), (float)e.getY(), Circle.RADIUS, paint);
+            canvas.drawCircle(e.position.x, e.position.y, Circle.RADIUS, paint);
         }
         paint.setColor(Color.WHITE);
-        //canvas.drawCircle((float)centers[0].getX(), (float)centers[0].getY(), Circle.RADIUS, paint);
-        //canvas.drawCircle((float)centers[1].getX(), (float)centers[1].getY(), Circle.RADIUS, paint);
         canvas.drawLine(startX, startY, endX, endY, paint);
     }
 
     private Circle findNearCenter(float x, float y) {
-        if(calcSqrDistance(x, y, centers[0].getX(), centers[0].getY()) < calcSqrDistance(x, y, centers[1].getX(), centers[1].getY())) {
+        if(Vector2.calcSqrDistance(x, y, centers[0].position.x, centers[0].position.y) < Vector2.calcSqrDistance(x, y, centers[1].position.x, centers[1].position.y)) {
             return centers[0];
         }else {
             return centers[1];
@@ -77,37 +77,33 @@ class MainView extends View {
         final int deg = 60;
         for (Circle e: circles) {
             if (e == center) { continue; }
-            if (calcSqrDistance(center.getX(), center.getY(), e.getX(), e.getY()) <= 16 * Circle.RADIUS * Circle.RADIUS) {
-                e.setX(e.getX() - center.getX());
-                e.setY(e.getY() - center.getY());
-                double x = e.getX();
-                double y = e.getY();
-                e.setX(x * Math.cos(Math.toRadians(deg)) - y * Math.sin(Math.toRadians(deg)));
-                e.setY(x * Math.sin(Math.toRadians(deg)) + y * Math.cos(Math.toRadians(deg)));
-                e.setX(e.getX() + center.getX());
-                e.setY(e.getY() + center.getY());
+            if (Vector2.calcSqrDistance(center.position.x, center.position.y, e.position.x, e.position.y) <= 16 * Circle.RADIUS * Circle.RADIUS) {
+                e.position.x -= center.position.x;
+                e.position.y -= center.position.y;
+                float x = e.position.x;
+                float y = e.position.y;
+                e.position.x = x * (float)Math.cos(Math.toRadians(deg)) - y * (float)Math.sin(Math.toRadians(deg));
+                e.position.y = x * (float)Math.sin(Math.toRadians(deg)) + y * (float)Math.cos(Math.toRadians(deg));
+                e.position.x += center.position.x;
+                e.position.y += center.position.y;
             }
         }
     }
 
     private void rotL(Circle center) {
-        final int deg = 60;
+        final int deg = -60;
         for (Circle e: circles) {
             if (e == center) { continue; }
-            if (calcSqrDistance(center.getX(), center.getY(), e.getX(), e.getY()) <= 16 * Circle.RADIUS * Circle.RADIUS) {
-                e.setX(e.getX() - center.getX());
-                e.setY(e.getY() - center.getY());
-                double x = e.getX();
-                double y = e.getY();
-                e.setX(x * Math.cos(Math.toRadians(deg)) - y * Math.sin(Math.toRadians(deg)));
-                e.setY(x * Math.sin(Math.toRadians(deg)) + y * Math.cos(Math.toRadians(deg)));
-                e.setX(e.getX() + center.getX());
-                e.setY(e.getY() + center.getY());
+            if (Vector2.calcSqrDistance(center.position.x, center.position.x, e.position.x, e.position.y) <= 16 * Circle.RADIUS * Circle.RADIUS) {
+                e.position.x -= center.position.x;
+                e.position.y -= center.position.y;
+                float x = e.position.x;
+                float y = e.position.y;
+                e.position.x = x * (float)Math.cos(Math.toRadians(deg)) - y * (float)Math.sin(Math.toRadians(deg));
+                e.position.y = x * (float)Math.sin(Math.toRadians(deg)) + y * (float)Math.cos(Math.toRadians(deg));
+                e.position.x += center.position.x;
+                e.position.y += center.position.y;
             }
         }
-    }
-
-    static double calcSqrDistance(double x0, double y0, double x1, double y1) {
-        return (x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1);
     }
 }
