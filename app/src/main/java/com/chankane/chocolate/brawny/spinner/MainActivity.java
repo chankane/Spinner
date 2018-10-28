@@ -9,6 +9,7 @@ public class MainActivity extends Activity {
 
     private GestureDetector gestureDetector;
     MainView view;
+    private boolean firstTouch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,10 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(!firstTouch) {
+            view.shuffle();
+            firstTouch = true;
+        }
         return gestureDetector.onTouchEvent(event);
     }
 }

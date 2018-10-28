@@ -16,7 +16,7 @@ class MainView extends View {
     private float endY;
     private Circle[] centers;
     private Circle[] circles;
-    private int degree;
+    boolean playable = false;
 
     private void init() {
         circles = new Stage().read();
@@ -36,6 +36,10 @@ class MainView extends View {
     }
 
     public void set(float startX, float startY, float endX, float endY) {
+        Log.d("playable", String.valueOf(playable));
+        if(!playable) {
+            return;
+        }
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
@@ -66,7 +70,54 @@ class MainView extends View {
             canvas.drawCircle(e.position.x, e.position.y, Circle.RADIUS, paint);
         }
         paint.setColor(Color.WHITE);
-        canvas.drawLine(startX, startY, endX, endY, paint);
+    }
+
+    void shuffle() {
+        playable = false;
+        new Thread(new Runnable() {
+            final int move = 20;
+            int old;
+            @Override
+            public void run() {
+                for(int i=0; i<move; i++) {
+                    int rand = (int)(Math.random() * 4);
+                    if(rand == 0 && old == 1){
+                        i--;
+                        continue;
+                    }
+                    if(rand == 1 && old == 0){
+                        i--;
+                        continue;
+                    }
+                    if(rand == 2 && old == 3){
+                        i--;
+                        continue;
+                    }
+                    if(rand == 3 && old == 2){
+                        i--;
+                        continue;
+                    }
+                    old = rand;
+                    switch (rand) {
+                        case 0:
+                            rotR(centers[0]);
+                            break;
+                        case 1:
+                            rotL(centers[0]);
+                            break;
+                        case 2:
+                            rotR(centers[1]);
+                            break;
+                        case 3:
+                            rotL(centers[1]);
+                            break;
+                    }
+                    try{
+                        Thread.sleep(12 * 10);
+                    }catch(InterruptedException e){}
+                }
+            }
+        }).start();
     }
 
     private Circle findNearCenter(float x, float y) {
@@ -104,6 +155,7 @@ class MainView extends View {
                         Thread.sleep(6);
                     }catch(InterruptedException e){}
                 }
+                playable = true;
             }
         }).start();
     }
