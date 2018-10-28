@@ -17,6 +17,7 @@ class MainView extends View {
     private Circle[] centers;
     private Circle[] circles;
     boolean playable = false;
+    boolean solve;
 
     private void init() {
         circles = new Stage().read();
@@ -69,7 +70,13 @@ class MainView extends View {
             paint.setColor(e.getColor());
             canvas.drawCircle(e.position.x, e.position.y, Circle.RADIUS, paint);
         }
-        paint.setColor(Color.WHITE);
+        if(solve) {
+            paint.setTextSize(130);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.WHITE);
+            canvas.drawText("Can you solve?", 100, 880, paint);
+            solve = false;
+        }
     }
 
     void shuffle() {
@@ -116,6 +123,8 @@ class MainView extends View {
                         Thread.sleep(12 * 10);
                     }catch(InterruptedException e){}
                 }
+                MainView.this.solve = true;
+                invalidate();
             }
         }).start();
     }
@@ -156,6 +165,9 @@ class MainView extends View {
                     }catch(InterruptedException e){}
                 }
                 playable = true;
+                try{
+                    Thread.sleep(6);
+                }catch(InterruptedException e){}
             }
         }).start();
     }
