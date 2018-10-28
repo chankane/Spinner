@@ -40,11 +40,14 @@ class MainView extends View {
         this.endX = endX;
         this.endY = endY;
         Circle tmp = findNearCenter(startX, startY);
-        rotR(tmp);
+        float cross = Vector2.crossProduct(new Vector2(endX - startX, endY - startY), new Vector2(tmp.position.x - startX, tmp.position.y - startY));
+        if(cross > 0) {
+            rotR(tmp);
+        }else {
+            rotL(tmp);
+        }
         invalidate();
     }
-
-    //private int crossProduct()
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -94,7 +97,7 @@ class MainView extends View {
         final int deg = -60;
         for (Circle e: circles) {
             if (e == center) { continue; }
-            if (Vector2.calcSqrDistance(center.position.x, center.position.x, e.position.x, e.position.y) <= 16 * Circle.RADIUS * Circle.RADIUS) {
+            if (Vector2.calcSqrDistance(center.position.x, center.position.y, e.position.x, e.position.y) <= 16 * Circle.RADIUS * Circle.RADIUS) {
                 e.position.x -= center.position.x;
                 e.position.y -= center.position.y;
                 float x = e.position.x;
